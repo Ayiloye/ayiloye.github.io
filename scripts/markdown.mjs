@@ -1,17 +1,19 @@
-import { escape, link } from './html.mjs';
+import { escape, safeUrl } from './html.mjs';
 
 export function markdown(source) {
   const plain = (text) => escape(text).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>');
   const inline = (text) => {
     const pattern = /\[([^\]]+)\]\((https:\/\/[^\s)]+|\/[^\s)]*)\)/g;
-    let html = '';
-    let offset = 0;
-    for (const match of text.matchAll(pattern)) {
-      html += plain(text.slice(offset, match.index));
-      html += link(match[1], match[2]);
-      offset = match.index + match[0].length;
-    }
-    return html + plain(text.slice(offset));
+    const links = [];
+    // Keep links opaque while formatting the full line, so **text [link](url)**
+    // can span a link without escaping the anchor or losing the emphasis.
+    const withTokens = text.replace(pattern, (_, label, href) => {
+      const target = safeUrl(href);
+      const external = href.startsWith('https:') ? ' target="_blank" rel="noopener noreferrer"' : '';
+      const index = links.push(`<a href="${target}"${external}>${inline(label)}</a>`) - 1;
+      return `\uE000${index}\uE001`;
+    });
+    return plain(withTokens).replace(/\uE000(\d+)\uE001/g, (_, index) => links[Number(index)]);
   };
   const lines = source.replace(/\r/g, '').split('\n');
   const out = [];
