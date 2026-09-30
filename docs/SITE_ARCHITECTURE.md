@@ -21,7 +21,7 @@ index.html              Generated homepage
 now/, notes/, experiments/  Generated pages
 ```
 
-Generated HTML, `sitemap.xml`, `robots.txt`, and `404.html` are committed. The `verify` GitHub Action checks pull requests and pushes to `master`. It does not deploy. GitHub Pages serves the `master` root automatically after a merge.
+Generated HTML, `sitemap.xml`, `robots.txt`, and `404.html` are committed. `.nojekyll` tells GitHub Pages to serve those static files directly. The `verify` GitHub Action checks pull requests and pushes to `master`. It does not deploy. GitHub Pages serves the `master` root automatically after a merge.
 
 ## Build and publish
 

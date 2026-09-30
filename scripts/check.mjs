@@ -20,6 +20,6 @@ for (const file of pages) {
     if (!fs.existsSync(target)) failures.push(`${file}: broken link ${href}`);
   }
 }
-for (const file of ['assets/style.css', 'assets/favicon.svg', 'sitemap.xml', 'robots.txt']) if (!fs.existsSync(path.join(root, file))) failures.push(`Missing ${file}`);
+for (const file of ['.nojekyll', 'assets/style.css', 'assets/favicon.svg', 'sitemap.xml', 'robots.txt']) if (!fs.existsSync(path.join(root, file))) failures.push(`Missing ${file}`);
 if (failures.length) { console.error(failures.join('\n')); process.exitCode = 1; }
 else console.log(`Checked ${pages.length} pages, local links, and metadata.`);
