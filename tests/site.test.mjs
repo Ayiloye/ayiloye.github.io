@@ -26,3 +26,10 @@ test('note content is published with a valid date and canonical URL', () => {
   assert.match(article, /href="https:\/\/ayiloye\.github\.io\/notes\/why-this-space-exists\/"/);
   assert.match(read('sitemap.xml'), /notes\/why-this-space-exists\//);
 });
+
+test('Now page keeps a logical heading sequence', () => {
+  const now = read('now/index.html');
+  assert.match(now, /<h1>/);
+  assert.match(now, /<h2>Practical AI systems<\/h2>/);
+  assert.doesNotMatch(now, /<h3>/);
+});

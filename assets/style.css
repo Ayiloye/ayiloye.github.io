@@ -136,7 +136,7 @@ strong { font-weight: 650; }
 .now-list { max-width: 900px; border-color: var(--line); }
 .now-list .focus-item { border-color: var(--line); grid-template-columns: 75px 1fr; padding-block: 2rem; }
 .now-list .focus-item .item-number { color: var(--green-dark); }
-.now-list .focus-item h3 { font-size: 1.65rem; }
+.now-list .focus-item h2 { font-size: 1.65rem; }
 .now-list .focus-item p { color: var(--ink-soft); font-size: 1rem; }
 .page-note { margin-top: 5rem; max-width: 670px; }
 .page-note h2 { font-size: 2rem; letter-spacing: -.04em; }
@@ -232,7 +232,7 @@ strong { font-weight: 650; }
   .page-hero { padding-top: 85px; }
   .page-hero h1 { font-size: clamp(3.6rem, 14vw, 5rem); }
   .now-list .focus-item { grid-template-columns: 40px 1fr; }
-  .now-list .focus-item h3 { font-size: 1.3rem; }
+  .now-list .focus-item h2 { font-size: 1.3rem; }
   .article { padding-block: 55px 95px; }
   .back-link { margin-bottom: 3rem; }
   .article header { margin-bottom: 3rem; }
