@@ -1,0 +1,27 @@
+{
+  "updated": "2026-09-30",
+  "focus": [
+    {
+      "title": "Practical AI systems",
+      "description": "Exploring agents, tools, and workflows that can complete useful work reliably."
+    },
+    {
+      "title": "Focused software products",
+      "description": "Researching overlooked problems and shaping small, useful products around them."
+    },
+    {
+      "title": "Human-led automation",
+      "description": "Reducing repetitive work while keeping people responsible for important decisions."
+    },
+    {
+      "title": "AI-assisted engineering",
+      "description": "Testing where AI improves research, development, review, and product execution."
+    }
+  ],
+  "profiles": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/Ayiloye"
+    }
+  ]
+}

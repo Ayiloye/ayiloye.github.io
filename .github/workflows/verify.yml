@@ -1,0 +1,23 @@
+name: Verify static site
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm run build
+      - run: npm run lint
+      - run: npm run check
+      - run: npm test
+      - name: Confirm generated files are committed
+        run: git diff --exit-code
