@@ -1,19 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { base, escape, link } from './html.mjs';
+import { markdown } from './markdown.mjs';
 
 const root = process.cwd();
-const base = 'https://ayiloye.github.io';
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const site = JSON.parse(read('content/site.json'));
 const experiments = JSON.parse(read('content/experiments.json'));
-const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-const safeUrl = (value) => {
-  if (typeof value !== 'string') throw new Error('URL must be a string');
-  const url = new URL(value, base);
-  if (url.protocol !== 'https:' || (value.startsWith('/') && url.origin !== base)) throw new Error(`Unsupported URL: ${value}`);
-  return escape(value);
-};
-const link = (label, href, className = '') => `<a${className ? ` class="${className}"` : ''} href="${safeUrl(href)}"${href.startsWith('https:') ? ' target="_blank" rel="noopener noreferrer"' : ''}>${escape(label)}</a>`;
 const write = (file, content) => {
   const target = path.join(root, file);
   fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -33,41 +26,6 @@ function parseNote(file) {
   for (const key of ['title', 'date', 'category', 'summary', 'slug']) if (!meta[key]) throw new Error(`Missing ${key}: ${file}`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(meta.date) || !/^[a-z0-9-]+$/.test(meta.slug)) throw new Error(`Invalid note date or slug: ${file}`);
   return { ...meta, body: match[2] };
-}
-
-function markdown(source) {
-  const inline = (text) => {
-    let html = escape(text);
-    html = html.replace(/\[([^\]]+)\]\((https:\/\/[^\s)]+|\/[^\s)]*)\)/g, (_, label, href) => link(label, href));
-    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    return html;
-  };
-  const lines = source.replace(/\r/g, '').split('\n');
-  const out = [];
-  let paragraph = [];
-  let list = [];
-  let code = [];
-  let inCode = false;
-  const flush = () => {
-    if (paragraph.length) out.push(`<p>${inline(paragraph.join(' '))}</p>`);
-    if (list.length) out.push(`<ul>${list.map((item) => `<li>${inline(item)}</li>`).join('')}</ul>`);
-    paragraph = [];
-    list = [];
-  };
-  for (const line of lines) {
-    if (line.startsWith('```')) {
-      if (inCode) { out.push(`<pre><code>${escape(code.join('\n'))}</code></pre>`); code = []; inCode = false; }
-      else { flush(); inCode = true; }
-    } else if (inCode) code.push(line);
-    else if (!line.trim()) flush();
-    else if (/^#{2,3} /.test(line)) { flush(); const level = line.startsWith('### ') ? 3 : 2; out.push(`<h${level}>${inline(line.slice(level + 1))}</h${level}>`); }
-    else if (line.startsWith('- ')) { if (paragraph.length) flush(); list.push(line.slice(2)); }
-    else { if (list.length) flush(); paragraph.push(line.trim()); }
-  }
-  flush();
-  if (inCode) throw new Error('Unclosed code fence');
-  return out.join('\n');
 }
 
 const noteFiles = fs.readdirSync(path.join(root, 'content/notes')).filter((name) => name.endsWith('.md'));

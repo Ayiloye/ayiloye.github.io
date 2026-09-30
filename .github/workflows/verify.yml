@@ -20,4 +20,6 @@ jobs:
       - run: npm run check
       - run: npm test
       - name: Confirm generated files are committed
-        run: git diff --exit-code
+        run: |
+          git add -N .
+          git diff --exit-code
